@@ -24,6 +24,10 @@
 		42C2D0211CA7705300E66FB7 /* 9.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 42C2D0171CA7705300E66FB7 /* 9.jpg */; };
 		42C2D0221CA7705300E66FB7 /* 10.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 42C2D0181CA7705300E66FB7 /* 10.jpg */; };
 		42C2D0271CA7746A00E66FB7 /* ImagesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C2D0261CA7746A00E66FB7 /* ImagesTableViewController.m */; };
+		42C2D02A1CAA07E800E66FB7 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C2D0291CAA07E800E66FB7 /* User.m */; };
+		42C2D02D1CAA086B00E66FB7 /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C2D02C1CAA086B00E66FB7 /* Media.m */; };
+		42C2D0301CAA0A5D00E66FB7 /* Comment.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C2D02F1CAA0A5D00E66FB7 /* Comment.m */; };
+		42C2D0331CAA0C6000E66FB7 /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C2D0321CAA0C6000E66FB7 /* DataSource.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +73,14 @@
 		42C2D0181CA7705300E66FB7 /* 10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 10.jpg; sourceTree = "<group>"; };
 		42C2D0251CA7746A00E66FB7 /* ImagesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagesTableViewController.h; sourceTree = "<group>"; };
 		42C2D0261CA7746A00E66FB7 /* ImagesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesTableViewController.m; sourceTree = "<group>"; };
+		42C2D0281CAA07E800E66FB7 /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		42C2D0291CAA07E800E66FB7 /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
+		42C2D02B1CAA086B00E66FB7 /* Media.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Media.h; sourceTree = "<group>"; };
+		42C2D02C1CAA086B00E66FB7 /* Media.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Media.m; sourceTree = "<group>"; };
+		42C2D02E1CAA0A5D00E66FB7 /* Comment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Comment.h; sourceTree = "<group>"; };
+		42C2D02F1CAA0A5D00E66FB7 /* Comment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Comment.m; sourceTree = "<group>"; };
+		42C2D0311CAA0C6000E66FB7 /* DataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
+		42C2D0321CAA0C6000E66FB7 /* DataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +136,14 @@
 				42C2CFDF1CA752D500E66FB7 /* AppDelegate.m */,
 				42C2D0251CA7746A00E66FB7 /* ImagesTableViewController.h */,
 				42C2D0261CA7746A00E66FB7 /* ImagesTableViewController.m */,
+				42C2D0281CAA07E800E66FB7 /* User.h */,
+				42C2D0291CAA07E800E66FB7 /* User.m */,
+				42C2D02B1CAA086B00E66FB7 /* Media.h */,
+				42C2D02C1CAA086B00E66FB7 /* Media.m */,
+				42C2D02E1CAA0A5D00E66FB7 /* Comment.h */,
+				42C2D02F1CAA0A5D00E66FB7 /* Comment.m */,
+				42C2D0311CAA0C6000E66FB7 /* DataSource.h */,
+				42C2D0321CAA0C6000E66FB7 /* DataSource.m */,
 				42C2CFE71CA752D500E66FB7 /* Assets.xcassets */,
 				42C2CFE91CA752D500E66FB7 /* LaunchScreen.storyboard */,
 				42C2CFEC1CA752D500E66FB7 /* Info.plist */,
@@ -314,7 +334,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42C2D02A1CAA07E800E66FB7 /* User.m in Sources */,
+				42C2D0301CAA0A5D00E66FB7 /* Comment.m in Sources */,
+				42C2D02D1CAA086B00E66FB7 /* Media.m in Sources */,
 				42C2CFE01CA752D500E66FB7 /* AppDelegate.m in Sources */,
+				42C2D0331CAA0C6000E66FB7 /* DataSource.m in Sources */,
 				42C2CFDD1CA752D500E66FB7 /* main.m in Sources */,
 				42C2D0271CA7746A00E66FB7 /* ImagesTableViewController.m in Sources */,
 			);
@@ -534,6 +558,7 @@
 				42C2D0071CA752D500E66FB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		42C2D0081CA752D500E66FB7 /* Build configuration list for PBXNativeTarget "blocstagramTests" */ = {
 			isa = XCConfigurationList;
@@ -542,6 +567,7 @@
 				42C2D00A1CA752D500E66FB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		42C2D00B1CA752D500E66FB7 /* Build configuration list for PBXNativeTarget "blocstagramUITests" */ = {
 			isa = XCConfigurationList;
@@ -550,6 +576,7 @@
 				42C2D00D1CA752D500E66FB7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

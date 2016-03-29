@@ -7,6 +7,10 @@
 //
 
 #import "ImagesTableViewController.h"
+#import "DataSource.h"
+#import "Media.h"
+#import "User.h"
+#import "Comment.h"
 
 @interface ImagesTableViewController ()
 
@@ -14,16 +18,17 @@
 
 @implementation ImagesTableViewController
 
+- (id)initWithStyle:(UITableViewStyle)style {
+    self = [super initWithStyle:style];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    for (int i = 1; i <=10; i++) {
-        NSString *imageName = [NSString stringWithFormat:@"%d.jpg", i];
-        UIImage *image = [UIImage imageNamed:imageName];
-        if (image) {
-            [self.images addObject:image];
-        }
-    }
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"imageCell"];
 }
 
@@ -32,33 +37,24 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (id)initWithStyle:(UITableViewStyle)style {
-    self = [super initWithStyle:style];
-    if (self) {
-        // Custom initialization
-        self.images = [NSMutableArray array];
-    }
-    return self;
-}
 
 #pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.images.count;
+    return [DataSource sharedInstance].mediaItems.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Dequeue will either return a brand new cell of the type we registered, or a used one that is no longer visible on the screen. Cells are recycled as they scroll off screen to preserve memory.
+    static NSInteger imageViewTag = 1234;
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"imageCell" forIndexPath:indexPath];
     
     // Configure the cell...
     
-    //
-    static NSInteger imageViewTag = 1234;
     UIImageView *imageView = (UIImageView*)[cell.contentView viewWithTag:imageViewTag];
     
     if (!imageView) {
-        // This is a new cell; it doesn't have an image view yet
+        // This is a new cell, it doesn't have an image view yet
         imageView = [[UIImageView alloc] init];
         imageView.contentMode = UIViewContentModeScaleToFill;
         
@@ -67,17 +63,19 @@
         
         imageView.tag = imageViewTag;
         [cell.contentView addSubview:imageView];
-    } //3
+    }
     
-    UIImage *image = self.images[indexPath.row];
-    imageView.image = image;
+    Media *item = [DataSource sharedInstance].mediaItems[indexPath.row];
+    imageView.image = item.image;
     
     return cell;
 }
 
 - (CGFloat) tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UIImage *image = self.images[indexPath.row];
-    return (CGRectGetWidth(self.view.frame) / image.size.width) * image.size.height;
+    Media *item = [DataSource sharedInstance].mediaItems[indexPath.row];
+    UIImage *image = item.image;
+    
+    return image.size.height / image.size.width * CGRectGetWidth(self.view.frame);
 }
 
 
