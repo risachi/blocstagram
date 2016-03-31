@@ -123,4 +123,16 @@
     return [NSString stringWithString:s];
 }
 
+- (void) deleteItemAtIndex:(NSInteger)i {
+    NSArray *preDelete = @[];
+    NSArray *postDelete = @[];
+    
+    preDelete = [self.mediaItems subarrayWithRange:NSMakeRange(0, i)];
+    postDelete = [self.mediaItems subarrayWithRange:NSMakeRange(i + 1, self.mediaItems.count - i - 1)];
+    
+    NSArray *newList = [preDelete arrayByAddingObjectsFromArray:postDelete];
+    self.mediaItems = newList;
+}
+
+
 @end
