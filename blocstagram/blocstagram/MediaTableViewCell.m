@@ -24,7 +24,9 @@ static UIFont *boldFont; //for usernames
 static UIColor *usernameLabelGray; //for background color for the username and caption label
 static UIColor *commentLabelGray; //a separate background color for the comment section
 static UIColor *linkColor; //text color of every username to make it appear tap-able
-static NSParagraphStyle *paragraphStyle; //lets us st properties like line spacing, text alignment, indentation, paragraph spacing, etc.
+static UIColor *commentColor;
+static NSParagraphStyle *everyOtherStyle;
+static NSParagraphStyle *paragraphStyle; //lets us use properties like line spacing, text alignment, indentation, paragraph spacing, etc.
 
 @implementation MediaTableViewCell
 
@@ -34,6 +36,7 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
     usernameLabelGray = [UIColor colorWithRed:0.933 green:0.933 blue:0.933 alpha:1]; /*#eeeeee*/
     commentLabelGray = [UIColor colorWithRed:0.898 green:0.898 blue:0.898 alpha:1]; /*#e5e5e5*/
     linkColor = [UIColor colorWithRed:0.345 green:0.314 blue:0.427 alpha:1]; /*#58506d*/
+    commentColor = [UIColor colorWithRed:1 green:0.5 blue:0 alpha:1];
     
     NSMutableParagraphStyle *mutableParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     mutableParagraphStyle.headIndent = 20.0;
@@ -41,7 +44,15 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
     mutableParagraphStyle.tailIndent = -20.0;
     mutableParagraphStyle.paragraphSpacingBefore = 5;
     
+    NSMutableParagraphStyle *mutableEveryOtherStyle = [[NSMutableParagraphStyle alloc] init];
+    mutableEveryOtherStyle.headIndent = 20.0;
+    mutableEveryOtherStyle.firstLineHeadIndent = 20.0;
+    mutableEveryOtherStyle.tailIndent = -20.0;
+    mutableEveryOtherStyle.paragraphSpacingBefore = 5;
+    mutableEveryOtherStyle.alignment = NSTextAlignmentRight;
+    
     paragraphStyle = mutableParagraphStyle;
+    everyOtherStyle = mutableEveryOtherStyle;
 }
 
 - (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -91,17 +102,26 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
 - (NSAttributedString *) commentString {
     NSMutableAttributedString *commentString = [[NSMutableAttributedString alloc] init];
     
-    for (Comment *comment in self.mediaItem.comments) {
+    for (int i = 0; i < self.mediaItem.comments.count; i++) {
+        Comment *comment = self.mediaItem.comments[i];
         // make a string that says "username comment" followed by a line break
         NSString *baseString = [NSString stringWithFormat:@"%@ %@\n", comment.from.userName, comment.text];
         
         // make an attributed string, with "username" bold
         NSMutableAttributedString *oneCommentString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : lightFont, NSParagraphStyleAttributeName : paragraphStyle}];
         
+        NSRange firstComment  = NSMakeRange(0, oneCommentString.length);
+        
+        if (i == 0) {
+            [oneCommentString addAttribute:NSForegroundColorAttributeName value:commentColor range:firstComment];
+        } else if (i % 2) {
+            [oneCommentString addAttribute:NSParagraphStyleAttributeName value:everyOtherStyle range:firstComment];
+        }
+        
         NSRange usernameRange = [baseString rangeOfString:comment.from.userName];
         [oneCommentString addAttribute:NSFontAttributeName value:boldFont range:usernameRange];
         [oneCommentString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
-        
+        [oneCommentString addAttribute:NSKernAttributeName value:@(2) range:firstComment];
         [commentString appendAttributedString:oneCommentString];
     }
     
