@@ -177,9 +177,16 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
     CGSize usernameLabelSize = [self.usernameAndCaptionLabel sizeThatFits:maxSize];
     CGSize commentLabelSize = [self.commentLabel sizeThatFits:maxSize];
     
-    self.usernameAndCaptionLabelHeightConstraint.constant = usernameLabelSize.height + 20;
-    self.commentLabelHeightConstraint.constant = commentLabelSize.height + 20;
-    self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
+    //account for the possibility of missing data in our views
+    self.usernameAndCaptionLabelHeightConstraint.constant = usernameLabelSize.height == 0 ? 0 : usernameLabelSize.height + 20;
+    self.commentLabelHeightConstraint.constant = commentLabelSize.height == 0 ? 0: commentLabelSize.height + 20;
+    
+    //if self.mediaItem.image.size.width is zero, the calculatiou will cause a divide-by-zero, which is illegal and will cause a crash
+    if (self.mediaItem.image.size.width > 0 && CGRectGetWidth(self.contentView.bounds) > 0) {
+        self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
+    } else {
+        self.imageHeightConstraint.constant = 0;
+    }
 
     // hide the line between cells
     self.separatorInset = UIEdgeInsetsMake(0, CGRectGetWidth(self.bounds)/2.0, 0, CGRectGetWidth(self.bounds)/2.0);

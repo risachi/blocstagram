@@ -30,12 +30,71 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [[DataSource sharedInstance] addObserver:self forKeyPath:@"mediaItems" options:0 context:nil];
+    
     [self.tableView registerClass:[MediaTableViewCell class] forCellReuseIdentifier:@"mediaCell"];
+}
+
+- (void) dealloc {
+    [[DataSource sharedInstance] removeObserver:self forKeyPath:@"mediaItems"];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    //is this update coming from the DataSource object we registered with?
+    //is mediaItems the updated key?
+    if (object == [DataSource sharedInstance] && [keyPath isEqualToString:@"mediaItems"]) {
+        //we know mediaItems changed.Let's see what kind of change it is.
+        NSKeyValueChange kindOfChange = [change[NSKeyValueChangeKindKey] unsignedIntegerValue];
+        
+        if (kindOfChange == NSKeyValueChangeSetting) {
+            //someone set a brand new images array
+            //reloadData tells the table to scrap its current set of cells and cached information; it effectively asks for all the information again and rebuilds all of the necessary cells
+            [self.tableView reloadData];
+        } else if (kindOfChange == NSKeyValueChangeInsertion ||
+                   kindOfChange == NSKeyValueChangeRemoval ||
+                   kindOfChange == NSKeyValueChangeReplacement) {
+            //we have an incremental change: inserted, deleted, or replaced images
+            
+            //get a list of the index (or indices) that changed
+            NSIndexSet *indexSetOfChanges = change[NSKeyValueChangeIndexesKey];
+            
+            // #1 - convert this NSIndexSet to an NSArray of NSIndexPaths (which is what the table view animation methods require)
+            NSMutableArray *indexPathsThatChanged = [NSMutableArray array];
+            [indexSetOfChanges enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+                NSIndexPath *newIndexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+                [indexPathsThatChanged addObject:newIndexPath];
+            }];
+            
+            // #2 - call 'beginUpdates' to tell the table view we're about to make changes
+            [self.tableView beginUpdates];
+            
+            //tell the table view what the changes are
+            if (kindOfChange == NSKeyValueChangeInsertion) {
+                [self.tableView insertRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+            } else if (kindOfChange == NSKeyValueChangeRemoval) {
+                [self.tableView deleteRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+            } else if (kindOfChange == NSKeyValueChangeReplacement) {
+                [self.tableView reloadRowsAtIndexPaths:indexPathsThatChanged withRowAnimation:UITableViewRowAnimationAutomatic];
+            }
+            
+            //tell the table view that we're done telling it about changes, and to complete the animation
+            [self.tableView endUpdates];
+        }
+        
+    }
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        //delete the row from the data source
+        Media *item = [DataSource sharedInstance].mediaItems[indexPath.row];
+        [[DataSource sharedInstance] deleteMediaItem:item];
+    }
 }
 
 
