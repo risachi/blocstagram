@@ -17,6 +17,9 @@
 
 @property (nonatomic, strong) NSArray *mediaItems;
 
+@property (nonatomic, assign) BOOL isRefreshing;
+@property (nonatomic, assign) BOOL isLoadingOlderItems;
+
 @end
 
 
@@ -123,6 +126,46 @@
     }
     
     return [NSString stringWithString:s];
+}
+
+- (void) requestNewItemsWithCompletionHandler:(NewItemCompletionBlock)completionHandler {
+    // if a request for recovering new items is already in progress, we return immediately
+    if (self.isRefreshing == NO) {
+        self.isRefreshing = YES;
+        // we create a new random media object and append itt ot he front of the KVC array; we place the media item at index 0 because that is the index of the top-most table-cell (later this will be changed to access the Instagram API)
+        Media *media = [[Media alloc] init];
+        media.user = [self randomUser];
+        media.image = [UIImage imageNamed:@"10.jpg"];
+        media.caption = [self randomSentence];
+        
+        NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+        [mutableArrayWithKVO insertObject:media atIndex:0];
+        
+        self.isRefreshing = NO;
+        
+        if (completionHandler) {
+            completionHandler(nil);
+        }
+    }
+}
+
+- (void) requestOldItemsWithCompletionHandler:(NewItemCompletionBlock)completionHandler {
+    if (self.isLoadingOlderItems == NO) {
+        self.isLoadingOlderItems = YES;
+        Media *media = [[Media alloc] init];
+        media.user = [self randomUser];
+        media.image = [UIImage imageNamed:@"1.jpg"];
+        media.caption = [self randomSentence];
+        
+        NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
+        [mutableArrayWithKVO addObject:media];
+        
+        self.isLoadingOlderItems = NO;
+        
+        if (completionHandler) {
+            completionHandler(nil);
+        }
+    }
 }
 
 #pragma mark - Key/Value Observing
