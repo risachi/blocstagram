@@ -67,6 +67,9 @@
                             [self downloadImageForMediaItem:mediaItem];
                         }
                         
+                        //if cached images are found on the disk and displayed, try to fetch newer content so the user doesn't have to pull-to-refresh each time they launch the app
+                        [self requestNewItemsWithCompletionHandler:nil];
+                        
                     } else {
                         [self populateDataWithParameters:nil completionHandler:nil];
                     }
