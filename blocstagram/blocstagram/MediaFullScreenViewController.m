@@ -14,6 +14,7 @@
 @property (nonatomic, strong) Media *media;
 @property (nonatomic, strong) UITapGestureRecognizer *tap;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTap;
+@property (nonatomic, strong) UIButton *shareButton;
 
 @end
 
@@ -47,7 +48,6 @@
     //contentSize represents the size of the content view, which is the content being scrolled around
     self.scrollView.contentSize = self.media.image.size;
     
-    
     self.tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
     
     self.doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTapFired:)];
@@ -57,6 +57,11 @@
     
     [self.scrollView addGestureRecognizer:self.tap];
     [self.scrollView addGestureRecognizer:self.doubleTap];
+    
+    self.shareButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    [self.shareButton setTitle:NSLocalizedString(@"Share", @"Share button") forState:UIControlStateNormal];
+    [self.shareButton addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.shareButton];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -68,6 +73,16 @@
     [super viewWillLayoutSubviews];
     //the scroll view's frame is set to the view's bounds; this way the scroll view will always take up all of the view's space
     self.scrollView.frame = self.view.bounds;
+    CGFloat itemHeight = 70;
+    CGFloat width = CGRectGetWidth(self.view.bounds);
+    CGFloat scrollViewHeight = CGRectGetHeight(self.view.bounds) - itemHeight;
+    CGFloat shareButtonWidth = width / 3;
+    
+    self.shareButton.frame = CGRectMake(CGRectGetMaxX(self.view.bounds) - shareButtonWidth, 0, shareButtonWidth, itemHeight);
+    self.scrollView.frame = CGRectMake(0, CGRectGetMaxY(self.shareButton.frame), width, scrollViewHeight);
+    self.shareButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+    self.shareButton.contentVerticalAlignment = UIControlContentVerticalAlignmentCenter;
+    [self.shareButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     
     //the ratio of the scroll view's width to the image's width vs. the ratio of the scroll view's height to the image's height; whichever is smaller will become our minimumZoomScale
     //this prevents the user from pinching the image so small that there's wasted screen space
@@ -147,6 +162,13 @@
     } else {
         //if the current zoom scals is larger, then zomo out to the minimum scale
         [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:YES];
+    }
+}
+
+- (void) shareButtonPressed {
+    if (self.imageView) {
+        UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[self.imageView.image] applicationActivities:nil];
+        [self presentViewController:activityViewController animated:YES completion:nil];
     }
 }
 
