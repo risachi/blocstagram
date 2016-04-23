@@ -21,8 +21,8 @@
 @property (nonatomic, strong) NSLayoutConstraint *usernameAndCaptionLabelHeightConstraint;
 @property (nonatomic, strong) NSLayoutConstraint *commentLabelHeightConstraint;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizer;
+@property (nonatomic, strong) UITapGestureRecognizer *tapGestureRecognizerWithTwoFingers;
 @property (nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
-
 
 @end
 
@@ -61,6 +61,11 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
         self.tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
         self.tapGestureRecognizer.delegate = self;
         [self.mediaImageView addGestureRecognizer:self.tapGestureRecognizer];
+        
+        self.tapGestureRecognizerWithTwoFingers = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
+        self.tapGestureRecognizerWithTwoFingers.numberOfTouchesRequired = 2;
+        self.tapGestureRecognizerWithTwoFingers.delegate = self;
+        [self.mediaImageView addGestureRecognizer:self.tapGestureRecognizerWithTwoFingers];
         
         self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPressFired:)];
         self.longPressGestureRecognizer.delegate = self;
@@ -236,6 +241,10 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
 
 - (void) tapFired:(UITapGestureRecognizer *)sender {
     [self.delegate cell:self didTapImageView:self.mediaImageView];
+}
+
+- (void) tapWithTwoFingersFired:(UILongPressGestureRecognizer *)sender {
+    [self.delegate cell:self didTwoFingerTouchImageViewWithMediaItem:self.mediaItem];
 }
 
 - (void) longPressFired:(UILongPressGestureRecognizer *)sender {
