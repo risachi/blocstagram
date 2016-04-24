@@ -66,11 +66,6 @@
                         [self willChangeValueForKey:@"mediaItems"];
                         self.mediaItems = mutableMediaItems;
                         [self didChangeValueForKey:@"mediaItems"];
-                        //Since the image download happens in a different queue, the download may not finish by the time the files are saved. If this happens, the image property will be nil when they're unarchived. To account for this, we'll re-download any images for Media objects with a nil image. (Remember that downloadImageForMediaItem: will ignore any media items which already have images attached.)
-                        for (Media* mediaItem in self.mediaItems) {
-                            [self downloadImageForMediaItem:mediaItem];
-                        }
-                        
                     } else {
                         [self populateDataWithParameters:nil completionHandler:nil];
                     }
@@ -224,7 +219,6 @@
         
         if (mediaItem) {
             [tmpMediaItems addObject:mediaItem];
-            [self downloadImageForMediaItem:mediaItem];
         }
     }
     
@@ -281,20 +275,42 @@
 
 - (void) downloadImageForMediaItem:(Media *)mediaItem {
     if (mediaItem.mediaURL && !mediaItem.image) {
+        mediaItem.downloadState = MediaDownloadStateDownloadInProgress;
+        
         [self.instagramOperationManager GET:mediaItem.mediaURL.absoluteString
                                  parameters:nil
                                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                         if ([responseObject isKindOfClass:[UIImage class]]) {
                                             mediaItem.image = responseObject;
+                                            mediaItem.downloadState = MediaDownloadStateHasImage;
                                             NSMutableArray *mutableArrayWithKVO = [self mutableArrayValueForKey:@"mediaItems"];
                                             NSUInteger index = [mutableArrayWithKVO indexOfObject:mediaItem];
                                             [mutableArrayWithKVO replaceObjectAtIndex:index withObject:mediaItem];
+                                            [self saveImages];
+                                        } else {
+                                            mediaItem.downloadState = MediaDownloadStateNonRecoverableError;
                                         }
-                                        
-                                        [self saveImages];
                                         
                                     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
                                         NSLog(@"Error downloading image: %@", error);
+                                        mediaItem.downloadState = MediaDownloadStateNonRecoverableError;
+                                        
+                                        if ([error.domain isEqualToString:NSURLErrorDomain]) {
+                                            // A networking problem
+                                            if (error.code == NSURLErrorTimedOut ||
+                                                error.code == NSURLErrorCancelled ||
+                                                error.code == NSURLErrorCannotConnectToHost ||
+                                                error.code == NSURLErrorNetworkConnectionLost ||
+                                                error.code == NSURLErrorNotConnectedToInternet ||
+                                                error.code == kCFURLErrorInternationalRoamingOff ||
+                                                error.code == kCFURLErrorCallIsActive ||
+                                                error.code == kCFURLErrorDataNotAllowed ||
+                                                error.code == kCFURLErrorRequestBodyStreamExhausted) {
+                                                
+                                                // It might work if we try again
+                                                mediaItem.downloadState = MediaDownloadStateNeedsImage;
+                                            }
+                                        }
                                     }];
     }
 }
