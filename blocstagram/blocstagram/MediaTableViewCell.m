@@ -204,7 +204,7 @@ static NSParagraphStyle *paragraphStyle; //lets us set properties like line spac
     self.usernameAndCaptionLabelHeightConstraint.constant = usernameLabelSize.height == 0 ? 0 : usernameLabelSize.height + 20;
     self.commentLabelHeightConstraint.constant = commentLabelSize.height == 0 ? 0: commentLabelSize.height + 20;
     
-    //if self.mediaItem.image.size.width is zero, the calculatiou will cause a divide-by-zero, which is illegal and will cause a crash
+    //if self.mediaItem.image.size.width is zero, the calculation will cause a divide-by-zero, which is illegal and will cause a crash
     if (self.mediaItem.image.size.width > 0 && CGRectGetWidth(self.contentView.bounds) > 0) {
         self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
     } else {
