@@ -162,7 +162,7 @@
     [self presentViewController:fullScreenVC animated:YES completion:nil];
 }
 
-- (void) cell:(MediaTableViewCell *)cell didTwoFingerTouchImageView:(Media *)mediaItem {
+- (void) cell:(MediaTableViewCell *)cell didTwoFingerTouchImageViewWithMediaItem:(Media *)mediaItem {
     [[DataSource sharedInstance] downloadImageForMediaItem:mediaItem];
 }
 

@@ -31,7 +31,7 @@ static UIFont *boldFont; //for usernames
 static UIColor *usernameLabelGray; //for background color for the username and caption label
 static UIColor *commentLabelGray; //a separate background color for the comment section
 static UIColor *linkColor; //text color of every username to make it appear tap-able
-static NSParagraphStyle *paragraphStyle; //lets us st properties like line spacing, text alignment, indentation, paragraph spacing, etc.
+static NSParagraphStyle *paragraphStyle; //lets us set properties like line spacing, text alignment, indentation, paragraph spacing, etc.
 
 @implementation MediaTableViewCell
 
@@ -62,7 +62,7 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
         self.tapGestureRecognizer.delegate = self;
         [self.mediaImageView addGestureRecognizer:self.tapGestureRecognizer];
         
-        self.tapGestureRecognizerWithTwoFingers = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
+        self.tapGestureRecognizerWithTwoFingers = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapWithTwoFingersFired:)];
         self.tapGestureRecognizerWithTwoFingers.numberOfTouchesRequired = 2;
         self.tapGestureRecognizerWithTwoFingers.delegate = self;
         [self.mediaImageView addGestureRecognizer:self.tapGestureRecognizerWithTwoFingers];
@@ -243,8 +243,9 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
     [self.delegate cell:self didTapImageView:self.mediaImageView];
 }
 
-- (void) tapWithTwoFingersFired:(UILongPressGestureRecognizer *)sender {
+- (void) tapWithTwoFingersFired:(UITapGestureRecognizer *)sender {
     [self.delegate cell:self didTwoFingerTouchImageViewWithMediaItem:self.mediaItem];
+    printf("tap with two fingers");
 }
 
 - (void) longPressFired:(UILongPressGestureRecognizer *)sender {
