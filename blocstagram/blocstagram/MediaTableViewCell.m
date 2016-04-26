@@ -203,7 +203,7 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
     if (self.mediaItem.image.size.width > 0 && CGRectGetWidth(self.contentView.bounds) > 0) {
         self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
     } else {
-        self.imageHeightConstraint.constant = 10;
+        self.imageHeightConstraint.constant = 0;
     }
 
     // hide the line between cells

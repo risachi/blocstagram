@@ -34,9 +34,15 @@
     [[DataSource sharedInstance] addObserver:self forKeyPath:@"mediaItems" options:0 context:nil];
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refreshControlDidFire:) forControlEvents:UIControlEventValueChanged];
-
     
     [self.tableView registerClass:[MediaTableViewCell class] forCellReuseIdentifier:@"mediaCell"];
+    
+    self.scrollView = [UIScrollView new];
+    self.scrollView.delegate = self;
+    self.scrollView.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:self.scrollView];
+    
+    self.scrollView.decelerationRate = UIScrollViewDecelerationRateFast;
 }
 
 - (void) refreshControlDidFire:(UIRefreshControl *) sender {
@@ -119,10 +125,10 @@
 }
 
 - (void) tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
-    Media *mediaItem = [DataSource sharedInstance].mediaItems[indexPath.row];
-    if (mediaItem.downloadState == MediaDownloadStateNeedsImage) {
-        [[DataSource sharedInstance] downloadImageForMediaItem:mediaItem];
-    }
+//    Media *mediaItem = [DataSource sharedInstance].mediaItems[indexPath.row];
+//    if (mediaItem.downloadState == MediaDownloadStateNeedsImage) {
+//        [[DataSource sharedInstance] downloadImageForMediaItem:mediaItem];
+//    }
 }
 
 - (CGFloat) tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -154,11 +160,28 @@
     return [MediaTableViewCell heightForMediaItem:item width:CGRectGetWidth(self.view.frame)];
 }
 
+- (void) downloadImagesAtDeceleration {
+    NSArray *indexPaths = [self.tableView indexPathsForVisibleRows];
+    for (NSIndexPath *indexPath in indexPaths) {
+        Media *mediaItem = [DataSource sharedInstance].mediaItems[indexPath.row];
+        if (mediaItem.downloadState == MediaDownloadStateNeedsImage) {
+            [[DataSource sharedInstance] downloadImageForMediaItem:mediaItem];
+        }
+    }
+}
+
 #pragma mark - UIScrollViewDelegate
 
 // scrollViewDidScroll: is invoked when the scroll view is scrolled in any direction
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self infiniteScrollIfNecessary];
+}
+
+- (void) scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+    if (!self.scrollView.isDragging) {
+        NSLog(@"scrollViewWillBeginDecelerating:");
+        [self downloadImagesAtDeceleration];
+    }
 }
 
 #pragma mark - MediaTableViewCellDelegate
