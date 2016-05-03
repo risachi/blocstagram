@@ -71,13 +71,13 @@
         
         //animates the start of the stroke
         CABasicAnimation *strokeStartAnimation = [CABasicAnimation animationWithKeyPath:@"strokeStart"];
-        strokeStartAnimation.fromValue = @0.015;
-        strokeStartAnimation.toValue = @0.515;
+        strokeStartAnimation.fromValue = @0.515;
+        strokeStartAnimation.toValue = @0.015;
         
         //animates the end of the stroke
         CABasicAnimation *strokeEndAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-        strokeEndAnimation.fromValue = @0.485;
-        strokeEndAnimation.toValue = @0.985;
+        strokeEndAnimation.fromValue = @0.985;
+        strokeEndAnimation.toValue = @0.485;
         
         animationGroup.animations = @[strokeStartAnimation, strokeEndAnimation];
         [_circleLayer addAnimation:animationGroup forKey:@"progress"];
