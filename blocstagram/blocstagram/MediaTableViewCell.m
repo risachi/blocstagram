@@ -83,20 +83,21 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
         
         self.likeCount = [[UILabel alloc] init];
         self.likeCount.text = @"0";
+        self.likeCount.backgroundColor = usernameLabelGray;
         
         for (UIView *view in @[self.mediaImageView, self.usernameAndCaptionLabel, self.commentLabel, self.likeButton, self.likeCount]) {
             [self.contentView addSubview:view];
             //when using working with auto-layout, set to NO
             view.translatesAutoresizingMaskIntoConstraints = NO;
         }
-        NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton, _likeCount);
+        NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeCount, _likeButton);
         
         //_mediaImageView's leading edge is equal to the content view's leading edge. Their trailing edges are equal, too.
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|"
                                                                                  options:kNilOptions
                                                                                  metrics:nil
                                                                                    views:viewDictionary]];
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel][_likeButton(==38)][_likeCount]|"
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel][_likeCount][_likeButton(==38)]|"
                                                                                  options:NSLayoutFormatAlignAllTop |
                                                     NSLayoutFormatAlignAllBottom metrics:nil
                                                                                    views:viewDictionary]];
@@ -226,8 +227,8 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
     self.mediaImageView.image = _mediaItem.image;
     self.usernameAndCaptionLabel.attributedText = [self usernameAndCaptionString];
     self.commentLabel.attributedText = [self commentString];
-    self.likeButton.likeButtonState = mediaItem.likeState; //displays the correct state on the button
     self.likeCount.text = [NSString stringWithFormat:@"%li", (long)_mediaItem.likeCount];
+    self.likeButton.likeButtonState = mediaItem.likeState; //displays the correct state on the button
 }
 
 + (CGFloat) heightForMediaItem:(Media *)mediaItem width:(CGFloat)width {
