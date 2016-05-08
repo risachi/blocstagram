@@ -173,7 +173,7 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
     NSMutableAttributedString *mutableUsernameAndCaptionString = [[NSMutableAttributedString alloc] initWithString:baseString attributes:@{NSFontAttributeName : [lightFont fontWithSize:usernameFontSize], NSParagraphStyleAttributeName : paragraphStyle}];
     
     // only the username should be bold and purple; this overrides the attributes we set previously using the dictionary (but only for the specified NSRange)
-    NSRange usernameRange = [baseString rangeOfString:self.mediaItem.user.userName];
+    NSRange usernameRange = [baseString rangeOfString:self.mediaItem.user.userName ?: @"no username"];
     [mutableUsernameAndCaptionString addAttribute:NSFontAttributeName value:[boldFont fontWithSize:usernameFontSize] range:usernameRange];
     [mutableUsernameAndCaptionString addAttribute:NSForegroundColorAttributeName value:linkColor range:usernameRange];
     
