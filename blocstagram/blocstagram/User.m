@@ -15,7 +15,7 @@
     
     if (self) {
         self.idNumber = userDictionary[@"id"];
-        self.userName = userDictionary[@"username"];
+        self.userName = userDictionary[@"username"] ?: @"unknown_user";
         self.fullName = userDictionary[@"full_name"];
         
         NSString *profileURLString = userDictionary[@"profile_picture"];
@@ -36,12 +36,12 @@
     
     if (self) {
         self.idNumber = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(idNumber))];
-        self.userName = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(userName))];
+        self.userName = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(userName))] ?: @"unknown_user";
         self.fullName = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(fullName))];
         self.profilePicture = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(profilePicture))];
         self.profilePictureURL = [aDecoder decodeObjectForKey:NSStringFromSelector(@selector(profilePictureURL))];
     }
-    
+
     return self;
 }
 
