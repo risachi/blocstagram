@@ -7,6 +7,7 @@
 //
 
 #import "PostToInstagramViewController.h"
+#import "PostImageLayoutCollectionViewCell.h"
 
 @interface PostToInstagramViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UIDocumentInteractionControllerDelegate>
 
@@ -101,7 +102,7 @@
         self.navigationItem.rightBarButtonItem = self.sendBarButton;
     }
     
-    [self.filterCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
+    [self.filterCollectionView registerClass:[PostImageLayoutCollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
     
     self.view.backgroundColor = [UIColor whiteColor];
     self.filterCollectionView.backgroundColor = [UIColor whiteColor];
@@ -149,7 +150,7 @@
 }
 
 - (UICollectionViewCell*) collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+    PostImageLayoutCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     
     static NSInteger imageViewTag = 1000;
     static NSInteger labelTag = 1001;
@@ -274,6 +275,35 @@
 
 - (void) addFiltersToQueue {
     CIImage *sourceCIImage = [CIImage imageWithCGImage:self.sourceImage.CGImage];
+    
+    // Dizzy filter
+    
+    [self.photoFilterOperationQueue addOperationWithBlock:^{
+        CIFilter *dizzyFilter = [CIFilter filterWithName:@"CITwirlDistortion"];
+        
+        if (dizzyFilter) {
+            [dizzyFilter setValue:sourceCIImage forKey:kCIInputImageKey];
+            [self addCIImageToCollectionView:dizzyFilter.outputImage withFilterTitle:NSLocalizedString(@"Dizzy", @"Dizzy Filter")];
+        }
+    }];
+    
+    
+    // Drama filter
+    
+    [self.photoFilterOperationQueue addOperationWithBlock:^{
+        CIFilter *monoFilter = [CIFilter filterWithName:@"CIPhotoEffectMono"];
+        CIFilter *gloomFilter = [CIFilter filterWithName:@"CIGloom"];
+    
+        if (monoFilter && gloomFilter) {
+            [monoFilter setValue:sourceCIImage forKey:kCIInputImageKey];
+            CIImage *dramaFilter = monoFilter.outputImage;
+    
+            [gloomFilter setValue:dramaFilter forKey:kCIInputImageKey];
+            dramaFilter = gloomFilter.outputImage;
+    
+            [self addCIImageToCollectionView:dramaFilter withFilterTitle:NSLocalizedString(@"Drama", @"Drama Filter")];
+        }
+     }];
     
     // Noir filter
     

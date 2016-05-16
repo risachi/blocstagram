@@ -17,6 +17,7 @@
 		42B4CCDA1CE9464500BFC9CE /* CropImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B4CCD91CE9464500BFC9CE /* CropImageViewController.m */; };
 		42B4CCE01CE94A3800BFC9CE /* ImageLibraryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B4CCDF1CE94A3800BFC9CE /* ImageLibraryViewController.m */; };
 		42B4CCE31CE955E900BFC9CE /* PostToInstagramViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B4CCE21CE955E900BFC9CE /* PostToInstagramViewController.m */; };
+		42B4CCE91CE978EC00BFC9CE /* PostImageLayoutCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 42B4CCE81CE978EC00BFC9CE /* PostImageLayoutCollectionViewCell.m */; };
 		42BF01601CC402FA00790731 /* MediaFullScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 42BF015F1CC402FA00790731 /* MediaFullScreenViewController.m */; };
 		42C2CFDD1CA752D500E66FB7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C2CFDC1CA752D500E66FB7 /* main.m */; };
 		42C2CFE01CA752D500E66FB7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 42C2CFDF1CA752D500E66FB7 /* AppDelegate.m */; };
@@ -82,6 +83,8 @@
 		42B4CCDF1CE94A3800BFC9CE /* ImageLibraryViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageLibraryViewController.m; sourceTree = "<group>"; };
 		42B4CCE11CE955E900BFC9CE /* PostToInstagramViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostToInstagramViewController.h; sourceTree = "<group>"; };
 		42B4CCE21CE955E900BFC9CE /* PostToInstagramViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostToInstagramViewController.m; sourceTree = "<group>"; };
+		42B4CCE71CE978EC00BFC9CE /* PostImageLayoutCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostImageLayoutCollectionViewCell.h; sourceTree = "<group>"; };
+		42B4CCE81CE978EC00BFC9CE /* PostImageLayoutCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostImageLayoutCollectionViewCell.m; sourceTree = "<group>"; };
 		42BF015E1CC402FA00790731 /* MediaFullScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaFullScreenViewController.h; sourceTree = "<group>"; };
 		42BF015F1CC402FA00790731 /* MediaFullScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaFullScreenViewController.m; sourceTree = "<group>"; };
 		42C2CFD81CA752D500E66FB7 /* blocstagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = blocstagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -202,6 +205,8 @@
 				42B4CCDF1CE94A3800BFC9CE /* ImageLibraryViewController.m */,
 				42B4CCE11CE955E900BFC9CE /* PostToInstagramViewController.h */,
 				42B4CCE21CE955E900BFC9CE /* PostToInstagramViewController.m */,
+				42B4CCE71CE978EC00BFC9CE /* PostImageLayoutCollectionViewCell.h */,
+				42B4CCE81CE978EC00BFC9CE /* PostImageLayoutCollectionViewCell.m */,
 				42C2D0281CAA07E800E66FB7 /* User.h */,
 				42C2D0291CAA07E800E66FB7 /* User.m */,
 				42C2D02B1CAA086B00E66FB7 /* Media.h */,
@@ -476,6 +481,7 @@
 			files = (
 				42B4CCC51CE17D6800BFC9CE /* CameraViewController.m in Sources */,
 				42BF01601CC402FA00790731 /* MediaFullScreenViewController.m in Sources */,
+				42B4CCE91CE978EC00BFC9CE /* PostImageLayoutCollectionViewCell.m in Sources */,
 				4252793E1CCC95D70013A3B1 /* CircleSpinnerView.m in Sources */,
 				42C2D02A1CAA07E800E66FB7 /* User.m in Sources */,
 				42B4CCE01CE94A3800BFC9CE /* ImageLibraryViewController.m in Sources */,
