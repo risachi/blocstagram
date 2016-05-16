@@ -48,15 +48,16 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void) viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     
+    CGFloat padding = 2;
     CGFloat width = CGRectGetWidth(self.view.frame);
-    CGFloat minWidth = 100;
+    CGFloat minWidth = width / 4;
     NSInteger divisor = width / minWidth;
-    CGFloat cellSize = width / divisor;
+    CGFloat cellSize = width / divisor - padding;
     
     UICollectionViewFlowLayout *flowLayout = (UICollectionViewFlowLayout *)self.collectionViewLayout;
     flowLayout.itemSize = CGSizeMake(cellSize, cellSize);
-    flowLayout.minimumInteritemSpacing = 0;
-    flowLayout.minimumLineSpacing = 0;
+    flowLayout.minimumInteritemSpacing = padding;
+    flowLayout.minimumLineSpacing = padding;
 }
 
 - (void) loadAssets {
