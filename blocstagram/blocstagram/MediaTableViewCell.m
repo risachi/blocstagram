@@ -27,6 +27,8 @@
 @property (nonatomic, strong) LikeButton *likeButton;
 @property (nonatomic, strong) ComposeCommentView *commentView;
 
+@property (nonatomic, strong) NSArray *horizontallyRegularConstraints;
+@property (nonatomic, strong) NSArray *horizontallyCompactConstraints;
 
 @end
 
@@ -94,10 +96,30 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
         NSDictionary *viewDictionary = NSDictionaryOfVariableBindings(_mediaImageView, _usernameAndCaptionLabel, _commentLabel, _likeButton, _commentView);
         
         //_mediaImageView's leading edge is equal to the content view's leading edge. Their trailing edges are equal, too.
-        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|"
-                                                                                 options:kNilOptions
-                                                                                 metrics:nil
-                                                                                   views:viewDictionary]];
+        self.horizontallyCompactConstraints = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_mediaImageView]|"
+                                                                                      options:kNilOptions
+                                                                                      metrics:nil
+                                                                                        views:viewDictionary];
+        
+        NSLayoutConstraint *widthConstraint = [NSLayoutConstraint constraintWithItem:_mediaImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:320];
+        NSLayoutConstraint *centerConstraint = [NSLayoutConstraint constraintWithItem:self.contentView
+                                                                            attribute:NSLayoutAttributeCenterX
+                                                                            relatedBy:0
+                                                                               toItem:_mediaImageView
+                                                                            attribute:NSLayoutAttributeCenterX
+                                                                           multiplier:1
+                                                                             constant:0];
+        
+        self.horizontallyRegularConstraints = @[widthConstraint, centerConstraint];
+        
+        if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
+            /* It's compact! */
+            [self.contentView addConstraints:self.horizontallyCompactConstraints];
+        } else if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+            /* It's regular! */
+            [self.contentView addConstraints:self.horizontallyRegularConstraints];
+        }
+        
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[_usernameAndCaptionLabel][_likeButton(==38)]|"
                                                                                  options:NSLayoutFormatAlignAllTop |
                                                     NSLayoutFormatAlignAllBottom metrics:nil
@@ -220,13 +242,39 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
     
     //if self.mediaItem.image.size.width is zero, the calculatiou will cause a divide-by-zero, which is illegal and will cause a crash
     if (self.mediaItem.image.size.width > 0 && CGRectGetWidth(self.contentView.bounds) > 0) {
-        self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
+        if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
+            /* It's compact! */
+            self.imageHeightConstraint.constant = self.mediaItem.image.size.height / self.mediaItem.image.size.width * CGRectGetWidth(self.contentView.bounds);
+        } else if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+            /* It's regular! */
+            self.imageHeightConstraint.constant = 320;
+        }
     } else {
         self.imageHeightConstraint.constant = 0;
     }
 
     // hide the line between cells
     self.separatorInset = UIEdgeInsetsMake(0, CGRectGetWidth(self.bounds)/2.0, 0, CGRectGetWidth(self.bounds)/2.0);
+}
+
+- (void) traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassCompact) {
+        /* It's compact! */
+        [self.contentView removeConstraints:self.horizontallyRegularConstraints];
+        [self.contentView addConstraints:self.horizontallyCompactConstraints];
+    } else if (self.traitCollection.horizontalSizeClass == UIUserInterfaceSizeClassRegular) {
+        /* It's regular */
+        [self.contentView removeConstraints:self.horizontallyCompactConstraints];
+        [self.contentView addConstraints:self.horizontallyRegularConstraints];
+    }
+}
+
+- (UITraitCollection *) traitCollection {
+    if (self.overrideTraitCollection) {
+        return self.overrideTraitCollection;
+    }
+    
+    return [super traitCollection];
 }
 
 - (void) setMediaItem:(Media *)mediaItem {
@@ -238,7 +286,7 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
     self.commentView.text = mediaItem.temporaryComment;
 }
 
-+ (CGFloat) heightForMediaItem:(Media *)mediaItem width:(CGFloat)width {
++ (CGFloat) heightForMediaItem:(Media *)mediaItem width:(CGFloat)width traitCollection:(UITraitCollection *) traitCollection {
     // Make a cell
     MediaTableViewCell *layoutCell = [[MediaTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"layoutCell"];
 
@@ -246,12 +294,16 @@ static NSParagraphStyle *paragraphStyle; //lets us st properties like line spaci
     
     layoutCell.frame = CGRectMake(0, 0, width, CGRectGetHeight(layoutCell.frame));
     
+    layoutCell.overrideTraitCollection = traitCollection;
+    
     [layoutCell setNeedsLayout];
     [layoutCell layoutIfNeeded];
     
     // Get the actual height required for the cell
     return CGRectGetMaxY(layoutCell.commentView.frame);
 }
+
+
 
 #pragma mark - Liking
 
