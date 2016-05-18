@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) UITapGestureRecognizer *tap;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTap;
+@property (nonatomic, strong) UITapGestureRecognizer *tapDismiss;
 
 @end
 
@@ -46,6 +47,7 @@
     //contentSize represents the size of the content view, which is the content being scrolled around
     self.scrollView.contentSize = self.media.image.size;
     
+    self.tapDismiss = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
     
     self.tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
     
@@ -53,6 +55,8 @@
     self.doubleTap.numberOfTapsRequired = 2; //numberOfTapsRequired allowes a tap gesture recognizer to require more than one tap to fire
     
     [self.tap requireGestureRecognizerToFail:self.doubleTap]; //requireGestureRecognizerToFail: allows one gesture recognizer to wait for another gesture recognizer to fail before it succeeds; without this line, it would be impossible to double-tap becasue the single tap gesture recognizer woul dfire before the user had a chance to tap twice
+    
+    [self.view addGestureRecognizer:self.tapDismiss];
     
     [self.scrollView addGestureRecognizer:self.tap];
     [self.scrollView addGestureRecognizer:self.doubleTap];
