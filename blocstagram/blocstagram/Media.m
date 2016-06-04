@@ -14,44 +14,39 @@
 
 - (instancetype) initWithDictionary:(NSDictionary *)mediaInfo {
     self = [super init];
-    
-    if (self) {
-        self.idNumber = mediaInfo[@"id"];
-        self.user = [[User alloc] initWithDictionary:mediaInfo[@"user"]];
-        NSString *standardResolutionImageURLString = mediaInfo[@"images"][@"standard_resolution"][@"url"];
-        NSURL *standardResolutionImageURL = [NSURL URLWithString:standardResolutionImageURLString];
-        
-        if (standardResolutionImageURL) {
-            self.mediaURL = standardResolutionImageURL;
-            self.downloadState = MediaDownloadStateNeedsImage;
-        } else {
-            self.downloadState = MediaDownloadStateNonRecoverableError;
-        }
-        
-        NSDictionary *captionDictionary = mediaInfo[@"caption"];
-        
-        // Caption might be null (if there's no caption)
-        if ([captionDictionary isKindOfClass:[NSDictionary class]]) {
-            self.caption = captionDictionary[@"text"];
-        } else {
-            self.caption = @"";
-        }
-        
-        NSMutableArray *commentsArray = [NSMutableArray array];
-        
-        for (NSDictionary *commentDictionary in mediaInfo[@"comments"][@"data"]) {
-            Comment *comment = [[Comment alloc] initWithDictionary:commentDictionary];
-            [commentsArray addObject:comment];
-        }
-        
-        self.comments = commentsArray;
-        
-        // Figure out whether the user has liked an image
-        BOOL userHasLiked = [mediaInfo[@"user_has_liked"] boolValue];
-        self.likeState = userHasLiked ? LikeStateLiked : LikeStateNotLiked;
-
+    if (! self) {
+        return self;
     }
     
+    self.idNumber = mediaInfo[@"id"];
+    self.user = [[User alloc] initWithDictionary:mediaInfo[@"user"]];
+    NSString *standardResolutionImageURLString = mediaInfo[@"images"][@"standard_resolution"][@"url"];
+    NSURL *standardResolutionImageURL = [NSURL URLWithString:standardResolutionImageURLString];
+    
+    if (standardResolutionImageURL) {
+        self.mediaURL = standardResolutionImageURL;
+        self.downloadState = MediaDownloadStateNeedsImage;
+    } else {
+        self.downloadState = MediaDownloadStateNonRecoverableError;
+    }
+    
+    
+    self.caption = [Media getCaptionSafely: mediaInfo];
+    
+    
+    NSMutableArray *commentsArray = [NSMutableArray array];
+    
+    for (NSDictionary *commentDictionary in mediaInfo[@"comments"][@"data"]) {
+        Comment *comment = [[Comment alloc] initWithDictionary:commentDictionary];
+        [commentsArray addObject:comment];
+    }
+    
+    self.comments = commentsArray;
+    
+    // Figure out whether the user has liked an image
+    BOOL userHasLiked = [mediaInfo[@"user_has_liked"] boolValue];
+    self.likeState = userHasLiked ? LikeStateLiked : LikeStateNotLiked;
+
     return self;
 }
 
@@ -92,6 +87,20 @@
     [aCoder encodeObject:self.comments forKey:NSStringFromSelector(@selector(comments))];
     [aCoder encodeInteger:self.likeState forKey:NSStringFromSelector(@selector(likeState))];
 
+}
+
+
+#pragma mark - Private
+
+
++ (NSString *) getCaptionSafely:(NSDictionary *)mediaInfo {
+    NSDictionary *captionDictionary = mediaInfo[@"caption"];
+    
+    if ([captionDictionary isKindOfClass:[NSDictionary class]]) {
+        return captionDictionary[@"text"];
+    } else {
+        return @"";
+    }
 }
 
 @end
