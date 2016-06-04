@@ -12,13 +12,13 @@
 
 @implementation Media
 
-- (instancetype) initWithDictionary:(NSDictionary *)mediaDictionary {
+- (instancetype) initWithDictionary:(NSDictionary *)mediaInfo {
     self = [super init];
     
     if (self) {
-        self.idNumber = mediaDictionary[@"id"];
-        self.user = [[User alloc] initWithDictionary:mediaDictionary[@"user"]];
-        NSString *standardResolutionImageURLString = mediaDictionary[@"images"][@"standard_resolution"][@"url"];
+        self.idNumber = mediaInfo[@"id"];
+        self.user = [[User alloc] initWithDictionary:mediaInfo[@"user"]];
+        NSString *standardResolutionImageURLString = mediaInfo[@"images"][@"standard_resolution"][@"url"];
         NSURL *standardResolutionImageURL = [NSURL URLWithString:standardResolutionImageURLString];
         
         if (standardResolutionImageURL) {
@@ -28,7 +28,7 @@
             self.downloadState = MediaDownloadStateNonRecoverableError;
         }
         
-        NSDictionary *captionDictionary = mediaDictionary[@"caption"];
+        NSDictionary *captionDictionary = mediaInfo[@"caption"];
         
         // Caption might be null (if there's no caption)
         if ([captionDictionary isKindOfClass:[NSDictionary class]]) {
@@ -39,16 +39,15 @@
         
         NSMutableArray *commentsArray = [NSMutableArray array];
         
-        for (NSDictionary *commentDictionary in mediaDictionary[@"comments"][@"data"]) {
+        for (NSDictionary *commentDictionary in mediaInfo[@"comments"][@"data"]) {
             Comment *comment = [[Comment alloc] initWithDictionary:commentDictionary];
             [commentsArray addObject:comment];
         }
         
         self.comments = commentsArray;
         
-        //figure out whether the user has liked an image
-        BOOL userHasLiked = [mediaDictionary[@"user_has_liked"] boolValue];
-        
+        // Figure out whether the user has liked an image
+        BOOL userHasLiked = [mediaInfo[@"user_has_liked"] boolValue];
         self.likeState = userHasLiked ? LikeStateLiked : LikeStateNotLiked;
 
     }
