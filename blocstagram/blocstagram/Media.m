@@ -19,7 +19,11 @@
     }
     
     self.idNumber = mediaInfo[@"id"];
-    self.user = [[User alloc] initWithDictionary:mediaInfo[@"user"]];
+    self.user     = [[User alloc] initWithDictionary:mediaInfo[@"user"]];
+    self.caption  = [Media getCaptionSafely: mediaInfo];
+    
+    
+    // Set the mediaURL and downloadState
     NSString *standardResolutionImageURLString = mediaInfo[@"images"][@"standard_resolution"][@"url"];
     NSURL *standardResolutionImageURL = [NSURL URLWithString:standardResolutionImageURLString];
     
@@ -31,9 +35,7 @@
     }
     
     
-    self.caption = [Media getCaptionSafely: mediaInfo];
-    
-    
+    // Create the `comments` array of Comment objects
     NSMutableArray *commentsArray = [NSMutableArray array];
     
     for (NSDictionary *commentDictionary in mediaInfo[@"comments"][@"data"]) {
@@ -43,7 +45,8 @@
     
     self.comments = commentsArray;
     
-    // Figure out whether the user has liked an image
+    
+    // Determine the likeState
     BOOL userHasLiked = [mediaInfo[@"user_has_liked"] boolValue];
     self.likeState = userHasLiked ? LikeStateLiked : LikeStateNotLiked;
 
