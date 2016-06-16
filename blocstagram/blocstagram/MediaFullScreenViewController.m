@@ -48,6 +48,7 @@
     self.scrollView.contentSize = self.media.image.size;
     
     self.tapDismiss = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
+    self.tapDismiss.delegate = self;
     
     self.tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapFired:)];
     
@@ -122,6 +123,11 @@
     [self centerScrollView];
 }
 
+- (void) viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    [self.view.window addGestureRecognizer:self.tapDismiss];
+}
+
 #pragma mark - UIScrollViewDelegate
 //tells the scroll view which view to zoom in and out on
 - (UIView*)viewForZoomingInScrollView:(UIScrollView *)scrollView {
@@ -159,6 +165,11 @@
         [self.scrollView setZoomScale:self.scrollView.minimumZoomScale animated:YES];
     }
 }
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
 
 /*
 #pragma mark - Navigation
